@@ -7,9 +7,11 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet(urlPatterns = {"/hello", "/hello-servlets"},
 			loadOnStartup = 1, name = "Test Servlet",
@@ -50,15 +52,28 @@ public class MyServlet extends HttpServlet {
 		String text = "<html><h1>Hello Servlet, Servlets are fun!</h1></html>" ;
 		String initParamName = getInitParameter("name");
 		String initParamCity = getInitParameter("city");
+		
+		Cookie[] cookies = httpRequest.getCookies();
+		for(Cookie c : cookies){
+			System.out.println("Cookie Name: " + c.getName());
+			System.out.println("Cookie Value: " + c.getValue());
+		}
+		
+		HttpSession session = httpRequest.getSession();
+		System.out.println("My Servlet - Is Session Existing: " + session.isNew());
+		
 		httpResponse.getWriter().println(text);
 		httpResponse.getWriter().println("Name = " + initParamName);
 		httpResponse.getWriter().println("City = " + initParamCity);
 		httpResponse.getWriter().flush();
+		
+
 	}
 	
 	@Override
 	public void destroy(){
 		System.out.println("Servlet destroy() method called!");
+		super.destroy();
 	}
 
 }
